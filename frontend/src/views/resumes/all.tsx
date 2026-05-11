@@ -57,6 +57,24 @@ const AllResumes = () => {
       field: 'role',
     },
     {
+      header: 'Created At',
+      render: (resume) => {
+        const dateVal = resume.createdAt
+        let displayDate = 'N/A'
+
+        if (dateVal) {
+          const date = new Date(
+            typeof dateVal === 'object' && dateVal !== null ? String(dateVal) : dateVal,
+          )
+          if (!isNaN(date.getTime())) {
+            displayDate = date.toLocaleDateString()
+          }
+        }
+
+        return <div className="small text-body-secondary text-nowrap">{displayDate}</div>
+      },
+    },
+    {
       header: 'Actions',
       align: 'center',
       render: (resume) => (

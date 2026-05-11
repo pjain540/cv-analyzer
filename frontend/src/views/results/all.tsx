@@ -104,13 +104,22 @@ const AllResults = () => {
             ),
         },
         {
-            header: 'Analysis Date',
-            field: 'createdAt',
-            render: (item) => (
-                <div className="small text-body-secondary text-nowrap">
-                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}
-                </div>
-            ),
+            header: 'Created At',
+            render: (item) => {
+                const dateVal = item.createdAt
+                let displayDate = 'N/A'
+
+                if (dateVal) {
+                    const date = new Date(
+                        typeof dateVal === 'object' && dateVal !== null ? String(dateVal) : dateVal,
+                    )
+                    if (!isNaN(date.getTime())) {
+                        displayDate = date.toLocaleDateString()
+                    }
+                }
+
+                return <div className="small text-body-secondary text-nowrap">{displayDate}</div>
+            },
         },
         {
             header: 'Action',
@@ -145,7 +154,7 @@ const AllResults = () => {
                 <CCard className="mb-4">
                     <CCardHeader className="d-flex justify-content-between align-items-center">
                         <div className="d-flex align-items-center">
-                            <CIcon icon={cilList} className="me-2 text-primary" />
+                            <CIcon icon={cilList} className="me-2" />
                             <strong>All Analysis Results</strong>
                         </div>
                     </CCardHeader>

@@ -20,7 +20,7 @@ export const extractResumeData = async (text: string) => {
     aiSummary: string
     role: string
 
-    experience should contain total years of experience example : 0-3 months, 3-6 months, 1 year, 1-2 years, 5+ years
+    experience should contain total years of experience example : 0-3 months, 3-6 months, 1 year, 1-2 years, 5+ years, if it contains like 1.2+ then keep it same please
     role is the role candidate is expirenced in like software engineer, data scientist, etc
     aiSummary should be bried 2 sentences professional summary
     also if a field is not found, use an empty string or empty array as per the requirement

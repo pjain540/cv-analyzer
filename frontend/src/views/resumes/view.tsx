@@ -163,7 +163,7 @@ const ViewResume = () => {
                                         )}
                                         {resume.gitHubUrl && (
                                             <CButton
-                                                color="dark"
+                                                color="light"
                                                 variant="outline"
                                                 href={resume.gitHubUrl}
                                                 target="_blank"
