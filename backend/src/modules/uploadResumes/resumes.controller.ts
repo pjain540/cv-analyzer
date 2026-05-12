@@ -4,19 +4,17 @@ import { ApiError } from "../../utils/ApiError.js";
 import * as resumeService from "./resumes.services.js";
 import type { Request, Response } from "express";
 
-export const uploadResumes = asyncHandler(async (req: Request, res: Response) => {
+export const uploadResumes = asyncHandler(async (req: any, res: Response) => {
     try {
         const files = req.files as Express.Multer.File[];
-
+        const userId = req.user._id
         if (!files || files.length === 0) {
             throw new ApiError(400, "No resumes uploaded");
         }
 
-
-
         // Process all resumes in parallel with error handling for each
         const results = await Promise.allSettled(
-            files.map(file => resumeService.processResume(file))
+            files.map(file => resumeService.processResume(file, userId))
         );
 
         const processedResults = results.map((res, index) => ({
@@ -32,12 +30,13 @@ export const uploadResumes = asyncHandler(async (req: Request, res: Response) =>
     }
 });
 
-export const getAllResumes = asyncHandler(async (req: Request, res: Response) => {
+export const getAllResumes = asyncHandler(async (req: any, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const pagination = req.query.pagination !== "false";
+    const userId = req.user._id
 
-    const resumes = await resumeService.getAllResumes(page, limit, pagination);
+    const resumes = await resumeService.getAllResumes(page, limit, pagination, userId);
 
     return res.status(200).json(
         new ApiResponse(200, resumes, "Resumes fetched successfully")

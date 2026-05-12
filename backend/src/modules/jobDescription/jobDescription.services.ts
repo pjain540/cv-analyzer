@@ -1,14 +1,15 @@
 import { JobDescription } from "./jobDescription.model.js";
 import type { IJobDescription } from "./jobDescription.interface.js";
 import { getPaginatedData } from "../../utils/pagination.js";
+import type { Types } from "mongoose";
 
 export const createJobDescription = async (data: IJobDescription) => {
     const jobDescription = await JobDescription.create(data);
     return jobDescription;
 };
 
-export const getAllJobDescriptions = async (page: number, limit: number, pagination: boolean = true) => {
-    return await getPaginatedData(JobDescription, {}, page, limit);
+export const getAllJobDescriptions = async (page: number, limit: number, pagination: boolean = true, userId: Types.ObjectId) => {
+    return await getPaginatedData(JobDescription, { user: userId }, page, limit);
 };
 
 export const getJobDescriptionById = async (id: string) => {

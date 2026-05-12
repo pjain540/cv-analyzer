@@ -67,7 +67,7 @@ const Dashboard = () => {
                     <span className="fw-semibold">
                       {result.jobDescription?.title || "Unknown Position"}
                     </span>
-                    <CBadge color="info" shape="rounded-pill" className="ms-2">
+                    <CBadge color="info" shape="rounded-pill" className="ms-2 d-flex align-items-center">
                       Exp: {result.jobDescription?.experience || "N/A"}
                     </CBadge>
                   </div>

@@ -59,7 +59,12 @@ const resumeSchema = new Schema<IResume>(
         role: {
             type: String,
             trim: true,
-        }
+        },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
     },
     {
         timestamps: true,

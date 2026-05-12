@@ -20,6 +20,11 @@ const jobDescriptionSchema = new Schema<IJobDescription>(
             type: String,
             required: [true, "Description is required"],
         },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
     },
     {
         timestamps: true,

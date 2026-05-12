@@ -6,11 +6,11 @@ import { ApiError } from "../../utils/ApiError.js";
 import { Types } from "mongoose";
 import { getPaginatedData } from "../../utils/pagination.js";
 
-export const performAnalysis = async (resumeIds: Types.ObjectId[], jobDescriptionId: Types.ObjectId) => {
+export const performAnalysis = async (resumeIds: Types.ObjectId[], jobDescriptionId: Types.ObjectId, userId: Types.ObjectId) => {
     const jd = await JobDescription.findById(jobDescriptionId);
     if (!jd) throw new ApiError(404, "Job Description not found");
 
-    const resumes = await Resume.find({ _id: { $in: resumeIds } });
+    const resumes = await Resume.find({ _id: { $in: resumeIds }, user: userId });
     if (resumes.length === 0) throw new ApiError(404, "No resumes found");
 
     const jdText = `Title: ${jd.title}, Experience: ${jd.experience}, Skills: ${jd.skills.join(", ")}, Description: ${jd.description}`;
@@ -33,7 +33,8 @@ export const performAnalysis = async (resumeIds: Types.ObjectId[], jobDescriptio
 
     const result = await AnalysisResult.create({
         jobDescription: jobDescriptionId,
-        resumes: analysisResults
+        resumes: analysisResults,
+        user: userId
     });
 
     console.log("🎉 Analysis complete and saved successfully!");
@@ -55,10 +56,10 @@ export const deleteAnalysisById = async (id: string) => {
     return result;
 }
 
-export const getAllAnalysis = async (page: number, limit: number, pagination: boolean = true) => {
+export const getAllAnalysis = async (page: number, limit: number, pagination: boolean = true, userId: Types.ObjectId) => {
     const results = await getPaginatedData(
         AnalysisResult,
-        {},
+        { user: userId },
         page,
         limit,
         { createdAt: -1 },

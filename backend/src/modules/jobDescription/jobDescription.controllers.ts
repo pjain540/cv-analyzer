@@ -4,9 +4,9 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { ApiError } from "../../utils/ApiError.js";
 import * as jobDescriptionService from "./jobDescription.services.js";
 
-export const createJobDescription = asyncHandler(async (req: Request, res: Response) => {
+export const createJobDescription = asyncHandler(async (req: any, res: Response) => {
     const { title, experience, skills, description } = req.body;
-
+    const userId = req.user._id
     if (!title || !experience || !skills || !description) {
         throw new ApiError(400, "All fields are required");
     }
@@ -16,6 +16,7 @@ export const createJobDescription = asyncHandler(async (req: Request, res: Respo
         experience,
         skills,
         description,
+        user: userId,
     });
 
     return res
@@ -23,12 +24,13 @@ export const createJobDescription = asyncHandler(async (req: Request, res: Respo
         .json(new ApiResponse(200, jobDescription, "Job Description created successfully"));
 });
 
-export const getAllJobDescriptions = asyncHandler(async (req: Request, res: Response) => {
+export const getAllJobDescriptions = asyncHandler(async (req: any, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const pagination = req.query.pagination !== "false";
+    const userId = req.user._id
 
-    const result = await jobDescriptionService.getAllJobDescriptions(page, limit, pagination);
+    const result = await jobDescriptionService.getAllJobDescriptions(page, limit, pagination, userId);
 
     return res
         .status(200)

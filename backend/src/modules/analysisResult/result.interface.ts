@@ -2,6 +2,7 @@ import type { Types } from "mongoose";
 
 export interface IAnalysisResult {
     jobDescription: Types.ObjectId;
+    user: Types.ObjectId;
     resumes: {
         resumeId: Types.ObjectId;
         score: number;

@@ -1,3 +1,5 @@
+import type { Types } from "mongoose";
+
 export interface IResume {
     name: string;
     email: string;
@@ -15,4 +17,5 @@ export interface IResume {
     education: string;
     aiSummary: string;
     role: string;
+    user: Types.ObjectId;
 }

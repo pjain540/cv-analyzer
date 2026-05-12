@@ -6,8 +6,9 @@ import { generateFileHash } from "../../utils/hash.js"
 import { Resume } from "./resumes.model.js"
 import { ApiError } from "../../utils/ApiError.js";
 import { getPaginatedData } from "../../utils/pagination.js";
+import type { Types } from "mongoose";
 
-export const processResume = async (file: Express.Multer.File) => {
+export const processResume = async (file: Express.Multer.File, userId: Types.ObjectId) => {
 
     if (file.mimetype !== 'application/pdf') {
         throw new ApiError(400, "Only pdf files are allowed");
@@ -43,6 +44,7 @@ export const processResume = async (file: Express.Multer.File) => {
     //save to database
     const newResume = await Resume.create({
         ...extractedData,
+        user: userId,
         resume: {
             url: cloudinaryResponse.secure_url,
             public_id: cloudinaryResponse.public_id,
@@ -56,8 +58,8 @@ export const processResume = async (file: Express.Multer.File) => {
 }
 
 
-export const getAllResumes = async (page: number, limit: number, pagination: boolean = true) => {
-    const resumes = await getPaginatedData(Resume, {}, page, limit, { createdAt: -1 }, pagination);
+export const getAllResumes = async (page: number, limit: number, pagination: boolean = true, userId: Types.ObjectId) => {
+    const resumes = await getPaginatedData(Resume, { user: userId }, page, limit, { createdAt: -1 }, pagination);
     return resumes;
 }
 

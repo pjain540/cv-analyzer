@@ -3,10 +3,10 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import type { Request, Response } from "express";
 
-export const createAnalysis = asyncHandler(async (req: Request, res: Response) => {
+export const createAnalysis = asyncHandler(async (req: any, res: Response) => {
     const { resume, jobDescription } = req.body;
-
-    const analysisResult = await resultService.performAnalysis(resume, jobDescription);
+    const userId = req.user._id
+    const analysisResult = await resultService.performAnalysis(resume, jobDescription, userId);
 
     return res.status(201).json(
         new ApiResponse(201, analysisResult, "Analysis performed successfully")
@@ -31,12 +31,12 @@ export const deleteAnalysis = asyncHandler(async (req: Request, res: Response) =
     );
 });
 
-export const getAllAnalysis = asyncHandler(async (req: Request, res: Response) => {
+export const getAllAnalysis = asyncHandler(async (req: any, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const pagination = req.query.pagination !== "false";
-
-    const results = await resultService.getAllAnalysis(page, limit, pagination);
+    const userId = req.user._id
+    const results = await resultService.getAllAnalysis(page, limit, pagination, userId);
 
     return res.status(200).json(
         new ApiResponse(200, results, "All analysis fetched successfully")

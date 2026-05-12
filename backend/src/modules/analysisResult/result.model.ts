@@ -7,6 +7,11 @@ const analysisResultSchema = new Schema<IAnalysisResult>(
             type: Schema.Types.ObjectId,
             ref: "JobDescription"
         },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
         resumes: [
             {
                 resumeId: {
@@ -25,6 +30,7 @@ const analysisResultSchema = new Schema<IAnalysisResult>(
             }
         ]
     },
+
     {
         timestamps: true
     }
