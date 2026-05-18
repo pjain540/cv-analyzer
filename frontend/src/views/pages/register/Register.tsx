@@ -25,17 +25,89 @@ const Register = () => {
     password: '',
   })
   const [error, setError] = useState('')
+  const [formErrors, setFormErrors] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  })
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+  const validateField = (name: string, value: string) => {
+    let errorMsg = ''
+    if (value.length === 0) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }))
+      return
+    }
+    switch (name) {
+      case 'firstName':
+      case 'lastName':
+        if (!/^[a-zA-Z]+$/.test(value)) {
+          errorMsg = 'Must contain only letters'
+        }
+        break
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(value)) {
+          errorMsg = 'Enter a valid email address'
+        }
+        break
+      case 'password':
+        if (value.length < 8) {
+          errorMsg = 'Password must be at least 8 characters'
+        }
+        break
+      default:
+        break
+    }
+    setFormErrors(prev => ({ ...prev, [name]: errorMsg }))
   }
 
-  const handleRegister = async (e) => {
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target
+    
+    // Prevent typing non-letters in firstName and lastName
+    if ((name === 'firstName' || name === 'lastName') && !/^[a-zA-Z]*$/.test(value)) {
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    validateField(name, value)
+  }
+
+  const handleRegister = async (e: any) => {
     e.preventDefault()
     setError('')
+    
+    const isFirstNameValid = /^[a-zA-Z]+$/.test(formData.firstName)
+    const isLastNameValid = /^[a-zA-Z]+$/.test(formData.lastName)
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    const isPasswordValid = formData.password.length >= 8
+
+    let hasErrors = false
+    const newErrors = { firstName: '', lastName: '', email: '', password: '' }
+
+    if (!formData.firstName || !isFirstNameValid) {
+      newErrors.firstName = !formData.firstName ? 'First name is required' : 'Must contain only letters'
+      hasErrors = true
+    }
+    if (!formData.lastName || !isLastNameValid) {
+      newErrors.lastName = !formData.lastName ? 'Last name is required' : 'Must contain only letters'
+      hasErrors = true
+    }
+    if (!formData.email || !isEmailValid) {
+      newErrors.email = !formData.email ? 'Email is required' : 'Enter a valid email address'
+      hasErrors = true
+    }
+    if (!formData.password || !isPasswordValid) {
+      newErrors.password = !formData.password ? 'Password is required' : 'Password must be at least 8 characters'
+      hasErrors = true
+    }
+
+    setFormErrors(newErrors)
+    if (hasErrors) return
+
     setLoading(true)
     try {
       const response = await userService.registerUser(formData)
@@ -74,9 +146,12 @@ const Register = () => {
                           autoComplete="given-name"
                           value={formData.firstName}
                           onChange={handleInputChange}
+                          invalid={!!formErrors.firstName}
+                          maxLength={10}
                           required
                         />
                       </CInputGroup>
+                      {formErrors.firstName && <div className="text-danger mt-1 mb-2" style={{ fontSize: '0.875em' }}>{formErrors.firstName}</div>}
                     </CCol>
                     <CCol xs={6}>
                       <CInputGroup>
@@ -89,13 +164,16 @@ const Register = () => {
                           autoComplete="family-name"
                           value={formData.lastName}
                           onChange={handleInputChange}
+                          invalid={!!formErrors.lastName}
+                          maxLength={10}
                           required
                         />
                       </CInputGroup>
+                      {formErrors.lastName && <div className="text-danger mt-1 mb-2" style={{ fontSize: '0.875em' }}>{formErrors.lastName}</div>}
                     </CCol>
                   </CRow>
 
-                  <CInputGroup className="mb-3">
+                  <CInputGroup className={formErrors.email ? "mb-1" : "mb-3"}>
                     <CInputGroupText>@</CInputGroupText>
                     <CFormInput
                       name="email"
@@ -103,10 +181,13 @@ const Register = () => {
                       autoComplete="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      invalid={!!formErrors.email}
                       required
                     />
                   </CInputGroup>
-                  <CInputGroup className="mb-3">
+                  {formErrors.email && <div className="text-danger mb-3" style={{ fontSize: '0.875em' }}>{formErrors.email}</div>}
+                  
+                  <CInputGroup className={formErrors.password ? "mb-1" : "mb-3"}>
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
                     </CInputGroupText>
@@ -117,11 +198,13 @@ const Register = () => {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={handleInputChange}
+                      invalid={!!formErrors.password}
                       required
                     />
                   </CInputGroup>
+                  {formErrors.password && <div className="text-danger mb-3" style={{ fontSize: '0.875em' }}>{formErrors.password}</div>}
                   <div className="d-grid">
-                    <CButton color="success" type="submit" disabled={loading}>
+                    <CButton color="success" type="submit" disabled={loading || Object.values(formErrors).some(err => err !== '')}>
                       {loading ? 'Creating Account...' : 'Create Account'}
                     </CButton>
                   </div>

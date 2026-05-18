@@ -21,12 +21,44 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setEmail(val)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (val.length > 0 && !emailRegex.test(val)) {
+      setEmailError("Enter the valid Email address")
+    } else {
+      setEmailError("")
+
+    }
+
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    // if (email.length === 0 && password.length === 0) {
+    //   setLoginError("Please enter your email and password")
+    //   return
+    // }
+    if (email.length === 0) {
+      setEmailError("Email is required")
+      return
+    }
+    if (password.length === 0) {
+      setPasswordError("Password is required")
+      return
+    }
+    if (emailError) return;
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long")
+      return
+    }
     try {
       await login({ email, password })
       navigate('/dashboard')
@@ -55,10 +87,12 @@ const Login = () => {
                         placeholder="Email"
                         autoComplete="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                         required
                       />
                     </CInputGroup>
+                    {emailError && <div className="text-danger mb-3">{emailError}</div>}
+
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
@@ -72,17 +106,18 @@ const Login = () => {
                         required
                       />
                     </CInputGroup>
+                    {passwordError && <div className="text-danger mb-3">{passwordError}</div>}
                     <CRow>
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right">
+                      {/* <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
                           Forgot password?
                         </CButton>
-                      </CCol>
+                      </CCol> */}
                     </CRow>
                   </CForm>
                 </CCardBody>
