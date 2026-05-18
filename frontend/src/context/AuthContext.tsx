@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             deleteCookie('accessToken');
             localStorage.removeItem('user');
             setUser(null);
-            window.location.href = '/login';
+            window.location.href = '/#/login';
         }
     };
 
