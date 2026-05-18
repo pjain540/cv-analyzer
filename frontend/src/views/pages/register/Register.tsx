@@ -66,7 +66,7 @@ const Register = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
-    
+
     // Prevent typing non-letters in firstName and lastName
     if ((name === 'firstName' || name === 'lastName') && !/^[a-zA-Z]*$/.test(value)) {
       return;
@@ -79,7 +79,7 @@ const Register = () => {
   const handleRegister = async (e: any) => {
     e.preventDefault()
     setError('')
-    
+
     const isFirstNameValid = /^[a-zA-Z]+$/.test(formData.firstName)
     const isLastNameValid = /^[a-zA-Z]+$/.test(formData.lastName)
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
@@ -186,7 +186,7 @@ const Register = () => {
                     />
                   </CInputGroup>
                   {formErrors.email && <div className="text-danger mb-3" style={{ fontSize: '0.875em' }}>{formErrors.email}</div>}
-                  
+
                   <CInputGroup className={formErrors.password ? "mb-1" : "mb-3"}>
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
@@ -209,6 +209,8 @@ const Register = () => {
                     </CButton>
                   </div>
                 </CForm>
+                <p className='text-center pt-2'>Do you have an account? <a href="/#/login">Login here</a></p>
+
               </CCardBody>
             </CCard>
           </CCol>

@@ -23,6 +23,7 @@ const Login = () => {
   const [error, setError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -59,11 +60,15 @@ const Login = () => {
       setPasswordError("Password must be at least 8 characters long")
       return
     }
+    
+    setLoading(true)
     try {
       await login({ email, password })
       navigate('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Invalid email or password')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -109,8 +114,8 @@ const Login = () => {
                     {passwordError && <div className="text-danger mb-3">{passwordError}</div>}
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4" type="submit">
-                          Login
+                        <CButton color="primary" className="px-4" type="submit" disabled={loading}>
+                          {loading ? 'Logging in...' : 'Login'}
                         </CButton>
                       </CCol>
                       {/* <CCol xs={6} className="text-right">
