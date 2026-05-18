@@ -35,7 +35,7 @@ const AppHeaderDropdown = () => {
           <div className="fw-semibold text-body-emphasis">Hello,</div>
           <div className="text-body-secondary ps-2">{user?.firstName} {user?.lastName}</div>
         </div>
-        <CAvatar src={avatar8} size="md" />
+        {/* <CAvatar src={avatar8} size="md" /> */}
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
 
