@@ -98,14 +98,12 @@ const CreateJobDescriptions = () => {
                 addToast(createToast('success', 'Job description updated successfully!'))
                 setTimeout(() => navigate('/job-descriptions'), 1500)
             } else {
-                await jobService.createJobDescription(dataToSend)
+                const response = await jobService.createJobDescription(dataToSend)
+                const newId = response?._id || response?.data?._id
                 addToast(createToast('success', 'Job description created successfully!'))
-                setFormData({
-                    title: '',
-                    experience: '',
-                    skills: '',
-                    description: '',
-                })
+                if (newId) {
+                    setTimeout(() => navigate(`/job-descriptions/edit/${newId}`), 1500)
+                }
             }
         } catch (error: any) {
             console.error('Error creating/updating job description:', error)
@@ -178,10 +176,13 @@ const CreateJobDescriptions = () => {
                                     required
                                 ></CFormTextarea>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-auto d-flex gap-2">
                                 <CButton color="primary" type="submit" disabled={loading}>
                                     {loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Job' : 'Create Job')}
                                 </CButton>
+                                {isEditMode && id && <CButton color="outline" type="button" disabled={loading} onClick={() => navigate(`/upload/resumes?id=${id}`)}>
+                                    Start Analysis
+                                </CButton>}
                             </div>
                         </CForm>
                     </CCardBody>

@@ -13,7 +13,10 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: "https://cv-analyzer-frontend-yhu0.onrender.com",
+  origin: [
+    "https://cv-analyzer-frontend-yhu0.onrender.com",
+    "http://localhost:3000"
+  ],
   credentials: true
 }));
 app.use(express.json());
@@ -26,5 +29,5 @@ app.use("/api/v1", mainRouter);
 connectDB()
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

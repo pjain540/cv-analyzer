@@ -18,7 +18,7 @@ import { cilCloudUpload } from '@coreui/icons'
 import DataTable, { Column } from '../../components/DataTable'
 import { jobService, JobDescription } from '../../services/jobService'
 import { resumeService } from '../../services/resumeService'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import analysisService from '../../services/analysisService'
 
 const UploadResume = () => {
@@ -31,10 +31,21 @@ const UploadResume = () => {
     const [toast, addToast] = useState<React.ReactElement<any> | undefined>(undefined)
     const toaster = useRef<HTMLDivElement>(null)
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get('id')
 
     useEffect(() => {
         fetchJDs()
     }, [])
+
+    useEffect(() => {
+        if (id && jds.length > 0) {
+            const match = jds.find((jd) => jd._id === id)
+            if (match) {
+                setSelectedJDs([id])
+            }
+        }
+    }, [jds, id])
 
     const fetchJDs = async () => {
         try {
@@ -250,9 +261,9 @@ const UploadResume = () => {
                                 ))
                             ) : (
                                 <div className="text-center py-3">
-                                    <div className="small text-muted mb-2">No JDs found</div>
-                                    <CButton size="sm" color="info" variant="outline" onClick={() => fetchJDs()}>
-                                        Refresh
+                                    <div className="small text-muted mb-2">No JDs found, Add Job Description for performing analysis.</div>
+                                    <CButton size="sm" color="primary" onClick={() => navigate('/job-descriptions/create')}>
+                                        Create JD
                                     </CButton>
                                 </div>
                             )}

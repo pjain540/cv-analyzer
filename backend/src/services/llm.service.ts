@@ -55,7 +55,7 @@ export const analyzeResume = async (resumeData: string, jobDescription: string) 
     Return the result as a JSON object with the following fields:
     score: number (0-100)
     matchPercentage: number (0-100)
-    aiRemark: string (brief professional feedback)
+    aiRemark: string (A brief professional feedback summary. This summary must explicitly list key requirements, technologies, or skills that are important in the Job Description but are missing/not present in the Resume. For example: 'The candidate is strong in React, but lacks Next.js and TypeScript which are required in the Job Description.')
     `;
 
     const chatCompletion = await groq.chat.completions.create({
